@@ -1,3 +1,55 @@
+VirtualDevice
+
+APP ID
+e88799de
+APP KEY
+582b89b1e9f58e0a6101540db3f375b1
+CLIENT ID
+5c19cc712450fe02ddaee904a615cb83
+CLIENT SECRET
+0a008abbffd038382bde07ba99e1930a14a37c32530c0153089254f2b11810cf
+
+UFE Endpoint: https://api-development-jp.internal.kii.com/api
+ThingIF: https://api-development-jp.internal.kii.com/thing-if
+
+
+Get app admin
+-------------
+curl -v -X POST \
+  -H "Content-Type: application/vnd.kii.OauthTokenRequest+json" \
+  "https://api-development-jp.internal.kii.com/api/apps/e88799de/oauth2/token" \
+  -d '{
+    "client_id" : "5c19cc712450fe02ddaee904a615cb83",
+    "client_secret" : "0a008abbffd038382bde07ba99e1930a14a37c32530c0153089254f2b11810cf",
+    "grant_type" : "client_credentials"
+  }'
+
+  "id" : "5c19cc712450fe02ddaee904a615cb83",
+  "access_token" : "5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70",
+  "expires_in" : 2147483646,
+  "token_type" : "bearer"
+
+User token
+----------
+curl -v -X POST \
+  -H "Content-Type: application/vnd.kii.OauthTokenRequest+json" \
+  "https://api-development-jp.internal.kii.com/api/apps/e88799de/oauth2/token" \
+  -d '{
+    "username" : "evan",
+    "password" : "123456",
+    "grant_type" : "password"
+  }'
+
+  "id" : "3c794b2c5ea0-d4f8-6e11-a5cd-0abc969c",
+  "access_token" : "5GSe8B616AbOaCPOnwrY9RunwLvUqwTFZgQZafyTeWs",
+  "expires_in" : 2147483646,
+  "token_type" : "bearer"
+
+Create trait:
+-------------
+
+Lamp-V1
+
 curl -v -X POST \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
 -H "Content-Type:application/vnd.kii.TraitCreationRequest+json"
@@ -55,3 +107,201 @@ curl -v -X POST \
   ],
   "dataGroupingInterval" : "15_MINUTES"
 '}
+
+EnvironmentSensor-V1
+
+curl -v -X POST \
+-H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+-H "Content-Type:application/vnd.kii.TraitCreationRequest+json"
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/EnvironmentSensor-V1/versions"
+-d '{
+  "states" : [
+    {
+      "CO2" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 2000,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "ppm"
+        }
+      }
+    },
+    {
+      "Smoke" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "int"
+        }
+      }
+    },
+  {
+      "Smoke" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 990,
+          "minimum" : -200,
+          "type" : "float",
+          "unit" : "˚C"
+        }
+      }
+    },
+    {
+      "VOD" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 30,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "ppm"
+        }
+      }
+    },
+    {
+      "Humidity" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 99,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "%"
+        }
+      }
+    },
+    {
+      "Noise" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 100,
+          "minimum" : 30,
+          "type" : "int",
+          "unit" : "dB"
+        }
+      }
+    },
+    {
+      "Brightness" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 40000,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "Lux"
+        }
+      }
+    },
+    {
+      "ConStates" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "PIR" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "int",
+        }
+      }
+    },
+    {
+      "PM25" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 999,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "ug/m3"
+        }
+      }
+    }
+  ],
+  "dataGroupingInterval" : "15_MINUTES"
+'}
+
+
+Create thing type
+-----------------
+curl -v -X PUT \
+-H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+-H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/OUT_THING_TYPE" \
+-d ' {
+  "simpleFlow" : true,
+    "verificationCodeFlowStartedByUser" : true,
+    "verificationCodeFlowStartedByThing" : true
+}'
+
+
+Create firmware version
+-----------------------
+curl -v -X PUT \
+-H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/OUT_THING_TYPE/firmware-versions/OUR_FW_VERSION"
+
+
+Create trait alias
+------------------
+curl -v -X PUT \
+ -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+ -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
+ "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/
+thing-types/OUR_THING_TYPE/firmware-versions/OUT_FW_VERSION/aliases/OUR_BasicFeatureAlias" \
+ -d '{
+   "trait" : "AirConditioner",
+   "traitVersion" : 1
+ }'
+
+
+Get all traits of app
+---------------------
+
+
+
+Finalize trait
+--------------
+curl -v -X PUT \
+  -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/
+AirConditioner/versions/1/finalize"
+
+
+Register state to trait 
+-----------------------
+curl -v -X PUT \
+  -H "Authorization: Bearer ｛THING_ACCESS_TOKEN}" \
+  -H "Content-Type: application/vnd.kii.MultipleTraitState+json" \
+  "https://api-development-jp.internal.kii.com/thing-if/apps/{APP_ID}/targets/
+thing:{THING_ID}/states" \
+  -d '{
+    "BasicFeatureAlias" : {
+      "currentTemperature" : 26
+    }
+  }'
+
+
+Send a command
+--------------
+curl -v -X POST \
+  -H "Authorization: Bearer ｛OWNER_ACCESS_TOKEN}" \
+  -H "Content-Type: application/vnd.kii.CommandCreationRequest+json" \
+  "https://api-development-jp.internal.kii.com/thing-if/apps/{APP_ID}/targets/
+thing:{THING_ID}/commands" \
+  -d '{
+    "actions": [
+      {
+        "BasicFeatureAlias": [
+          {"turnPower" : true},
+          {"setPresetTemperature": 26}
+        ]
+      }
+    ],
+    "issuer" : "user:{OWNER_USER_ID}"
+  }' 
+
