@@ -1,0 +1,57 @@
+curl -v -X POST \
+-H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+-H "Content-Type:application/vnd.kii.TraitCreationRequest+json"
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/Lamp-V1/versions"
+-d '{
+  "actions" : [
+    {
+      "setPower" : {
+        "description" : "Turn the power on/off",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "setBrightness" : {
+        "description" : "Configure the brightness",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    }
+  ],
+  "states" : [
+    {
+      "power" : {
+        "description" : "The current power state",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "brightness" : {
+        "description" : "The current brightness of the lamp",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    },
+    {
+      "battery" : {
+        "description" : "The current battery of the lamp",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    }
+  ],
+  "dataGroupingInterval" : "15_MINUTES"
+'}
