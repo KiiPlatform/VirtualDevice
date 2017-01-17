@@ -49,7 +49,7 @@ public class Device {
     }
 
     public static Device createNewDevice(String userID, String userToken, String thingType, String firmwareVersion) {
-        String vendorThingID = UUID.randomUUID().toString();
+        String vendorThingID = "VirtualDevice_" + UUID.randomUUID().toString();
         return createNewDevice(vendorThingID, userID, userToken, thingType, firmwareVersion);
     }
 
@@ -66,6 +66,9 @@ public class Device {
         RequestBody body = RequestBody.create(MediaType.parse("application/vnd.kii.OnboardingWithVendorThingIDByOwner+json"), json.toString());
         Request request = new Request.Builder()
                 .url(Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/onboardings")
+                .header("X-Kii-AppID", Config.KiiAppId)
+                .header("X-Kii-AppKey", Config.KiiAppKey)
+                .header("Authorization", "Bearer " + ownerToken)
                 .post(body)
                 .build();
         Response response = null;

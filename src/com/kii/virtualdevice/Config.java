@@ -19,6 +19,7 @@ public class Config {
 
 
     public static String KiiAppId = null;
+    public static String KiiAppKey = null;
     public static String KiiSiteUrl = null;
 
 
@@ -38,6 +39,7 @@ public class Config {
         try {
             JSONObject json = new JSONObject(fileData);
             KiiAppId = json.getString("kiiAppId");
+            KiiAppKey = json.getString("kiiAppKey");
             KiiSiteUrl = json.getString("kiiSite");
             switch (KiiSiteUrl) {
                 case "JP":
