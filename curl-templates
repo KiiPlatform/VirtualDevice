@@ -272,13 +272,28 @@ curl -v -X PUT \
 
 Create trait alias
 ------------------
+
+LampAlias
+
 curl -v -X PUT \
  -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
  -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/
-thing-types/OUR_THING_TYPE/firmware-versions/OUT_FW_VERSION/aliases/OUR_BasicFeatureAlias" \
+thing-types/Lamp/firmware-versions/V1/aliases/LampAlias" \
  -d '{
-   "trait" : "AirConditioner",
+   "trait" : "Lamp-V1",
+   "traitVersion" : 1
+ }'
+
+ EnvironmentSensorAlias
+
+ curl -v -X PUT \
+ -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+ -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
+ "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/
+thing-types/EnvironmentSensor/firmware-versions/V1/aliases/EnvironmentSensorAlias" \
+ -d '{
+   "trait" : "EnvironmentSensor-V1",
    "traitVersion" : 1
  }'
 
@@ -290,10 +305,20 @@ Get all traits of app
 
 Finalize trait
 --------------
+
+Lamp-V1
+
 curl -v -X PUT \
   -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
   "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/
-AirConditioner/versions/1/finalize"
+Lamp-V1/versions/1/finalize"
+
+EnvironmentSensor-V1
+
+curl -v -X PUT \
+  -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/
+EnvironmentSensor-V1/versions/1/finalize"
 
 
 Register state to trait 
