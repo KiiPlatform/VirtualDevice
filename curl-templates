@@ -228,10 +228,25 @@ curl -v -X POST \
 
 Create thing type
 -----------------
+
+Lamp
+
 curl -v -X PUT \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
 -H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/OUT_THING_TYPE" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp" \
+-d ' {
+  "simpleFlow" : true,
+    "verificationCodeFlowStartedByUser" : true,
+    "verificationCodeFlowStartedByThing" : true
+}'
+
+EnvironmentSensor
+
+curl -v -X PUT \
+-H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+-H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor" \
 -d ' {
   "simpleFlow" : true,
     "verificationCodeFlowStartedByUser" : true,
@@ -241,9 +256,18 @@ curl -v -X PUT \
 
 Create firmware version
 -----------------------
+
+V1 Lamp
+
 curl -v -X PUT \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/OUT_THING_TYPE/firmware-versions/OUR_FW_VERSION"
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp/firmware-versions/V1"
+
+V1 EnvironmentSensor
+
+curl -v -X PUT \
+-H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions/V1"
 
 
 Create trait alias
