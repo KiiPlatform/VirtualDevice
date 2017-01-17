@@ -10,7 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.nanohttpd:nanohttpd:2.3.1" level="project" />
     <orderEntry type="library" name="org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0" level="project" />
-    <orderEntry type="library" name="org.json:json:20160810" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit4">
         <CLASSES>
@@ -21,5 +20,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="com.squareup.okhttp3:okhttp:3.5.0" level="project" />
   </component>
 </module>

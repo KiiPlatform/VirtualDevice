@@ -12,9 +12,19 @@ import java.nio.file.Paths;
 public class Config {
 
     public static boolean enableLOGD = true;
+    public static final String THING_PASSWORD = "virtual_device";
+    public static int QoS = 0;
+    public static int HTTP_PORT = 8129;
+    public static int DEFAULT_MSG_QUEUE_SIZE = 100;
+
 
     public static String KiiAppId = null;
     public static String KiiSiteUrl = null;
+
+
+    static {
+        loadConfig();
+    }
 
     public static void loadConfig() {
         File file = new File("config.json");
@@ -31,19 +41,19 @@ public class Config {
             KiiSiteUrl = json.getString("kiiSite");
             switch (KiiSiteUrl) {
                 case "JP":
-                    KiiSiteUrl = "https://api-jp.kii.com/api";
+                    KiiSiteUrl = "https://api-jp.kii.com";
                     break;
                 case "US":
-                    KiiSiteUrl = "https://api.kii.com/api";
+                    KiiSiteUrl = "https://api.kii.com";
                     break;
                 case "CN3":
-                    KiiSiteUrl = "https://api-cn3.kii.com/api";
+                    KiiSiteUrl = "https://api-cn3.kii.com";
                     break;
                 case "SG":
-                    KiiSiteUrl = "https://api-sg.kii.com/api";
+                    KiiSiteUrl = "https://api-sg.kii.com";
                     break;
                 case "EU":
-                    KiiSiteUrl = "https://api-eu.kii.com/api";
+                    KiiSiteUrl = "https://api-eu.kii.com";
                     break;
             }
         } catch (Exception e) {
