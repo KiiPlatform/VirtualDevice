@@ -6,16 +6,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * Created by Evan on 2017/1/17.
  */
 public class Device implements MqttCallback {
+
+    public interface OnStatesChangedListener {
+        void onStatesChanged();
+    }
+
+    public interface OnCommandReceivedListener {
+        void onCommandReceived(String command);
+    }
 
     private JSONObject mqttEndpoint = null;
     private String thingAccessToken = null;
@@ -34,9 +42,18 @@ public class Device implements MqttCallback {
     OkHttpClient client = new OkHttpClient();
     private MqttClient mqttClient = null;
 
+    Thread genRandomStateThread = null;
+    Thread autoUploadStatesThread = null;
+    boolean uploadStateOnChanged = true;
+    int uploadStatePeriod = 0;
+    int genRandomStatePeriod = 0;
+
 
     private HashMap<String, JSONObject> deviceAlias = new HashMap<>();
+    OnStatesChangedListener mOnStatesChangedListener = null;
+    OnCommandReceivedListener mOnCommandReceivedListener = null;
 
+    private Random random = new Random();
 
     public Device(String vendorThingID, String userID, String userToken, String thingType, String firmwareVersion) {
         this.vendorThingID = vendorThingID;
@@ -207,12 +224,24 @@ public class Device implements MqttCallback {
                     JSONObject aliasItem = alias.optJSONObject(j);
                     String name = aliasItem.optString("name");
                     String trait = aliasItem.optString("trait");
+                    File file = new File(trait + ".json");
+                    String fileData = null;
+                    try {
+                        fileData = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())), "UTF-8");
+                        JSONObject traitDetail = new JSONObject(fileData);
+                        aliasItem.put("traitDetail", traitDetail);
+                    } catch (Exception e) {
+                        LogUtil.error(e.getMessage());
+                        throw new RuntimeException("Cannot read trait file:" + trait + ".json");
+                    }
                     deviceAlias.put(name, aliasItem);
                 }
                 break;
             }
         }
+        genRandomStatus();
     }
+
 
     public void start() throws IOException {
         if (mqttEndpoint == null) {
@@ -241,15 +270,16 @@ public class Device implements MqttCallback {
                 e.printStackTrace();
             }
             startTime = System.currentTimeMillis();
-//            uploadStates();
+            getStatesFromServer();
+            uploadStates();
         } catch (JSONException e) {
             LogUtil.error(e.getMessage());
         }
     }
 
     public void stop() {
-//        setGenRandomStatePeriod(0);
-//        setUploadStatePeriod(0);
+        setGenRandomStatePeriod(0);
+        setUploadStatePeriod(0);
         if (mqttClient != null && mqttClient.isConnected()) {
             try {
                 mqttClient.disconnect();
@@ -286,7 +316,188 @@ public class Device implements MqttCallback {
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
         LogUtil.debug("messageArrived topic:" + topic + " MqttMessage: " + mqttMessage);
         String msgData = new String(mqttMessage.getPayload(), "UTF-8");
+        if (mOnCommandReceivedListener != null) {
+            mOnCommandReceivedListener.onCommandReceived(msgData);
+        }
     }
 
+
+    public boolean uploadStates() throws IOException {
+        JSONObject uploadData = new JSONObject();
+        try {
+            for (JSONObject alias : deviceAlias.values()) {
+                String name = alias.optString("name");
+                JSONObject states = alias.optJSONObject("states");
+                uploadData.put(name, states);
+            }
+        } catch (JSONException e) {
+            LogUtil.error(e.getMessage());
+        }
+        String url = Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/targets/THING:" + thingID + "/states";
+        LogUtil.debug(uploadData.toString());
+        RequestBody body = RequestBody.create(
+                MediaType.parse("application/vnd.kii.MultipleTraitState+json"),
+                uploadData.toString()
+        );
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + thingAccessToken)
+                .put(body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            LogUtil.debug(String.valueOf(response.code()));
+            if (response.isSuccessful()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void getStatesFromServer() {
+        String url = Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/targets/THING:" + thingID + "/states";
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + thingAccessToken)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                String result = response.body().string();
+                LogUtil.debug(result);
+                JSONObject jsonObject = null;
+                jsonObject = new JSONObject(result);
+                JSONArray names = jsonObject.names();
+                for (int i = 0; i < names.length(); i++) {
+                    String name = names.optString(i);
+                    JSONObject states = jsonObject.optJSONObject(name);
+                    JSONObject alias = deviceAlias.get(name);
+                    if (alias != null && states.length() > 0) {
+                        alias.put("states", states);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.error(e.getMessage());
+        }
+    }
+
+    /**
+     * @param period Unit: Seconds
+     */
+    public void setGenRandomStatePeriod(int period) {
+        this.genRandomStatePeriod = period;
+        if (genRandomStateThread != null) {
+            genRandomStateThread.interrupt();
+            genRandomStateThread = null;
+        }
+        if (period > 0) {
+            genRandomStatePeriod = period;
+            genRandomStateThread = new Thread() {
+                @Override
+                public void run() {
+                    while (!isInterrupted()) {
+                        try {
+                            genRandomStatus();
+                            sleep(period * 1000);
+                        } catch (InterruptedException e) {
+                            break;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            };
+            genRandomStateThread.start();
+        }
+    }
+
+    public boolean isUploadStateOnChanged() {
+        return uploadStateOnChanged;
+    }
+
+    public void setUploadStateOnChanged(boolean uploadStateOnChanged) {
+        this.uploadStateOnChanged = uploadStateOnChanged;
+    }
+
+    public int getUploadStatePeriod() {
+        return uploadStatePeriod;
+    }
+
+    /**
+     * @param uploadStatePeriod Unit: Seconds 0: Stop
+     */
+    public void setUploadStatePeriod(int uploadStatePeriod) {
+        this.uploadStatePeriod = uploadStatePeriod;
+        if (autoUploadStatesThread != null) {
+            autoUploadStatesThread.interrupt();
+            autoUploadStatesThread = null;
+        }
+        if (uploadStatePeriod > 0) {
+            autoUploadStatesThread = new Thread() {
+                @Override
+                public void run() {
+                    while (!isInterrupted()) {
+                        try {
+                            sleep(Device.this.uploadStatePeriod * 1000);
+                            uploadStates();
+                        } catch (InterruptedException e) {
+                            break;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            };
+            autoUploadStatesThread.start();
+        }
+    }
+
+    public void genRandomStatus() {
+        for (JSONObject alias : deviceAlias.values()) {
+            JSONObject traitDetail = alias.optJSONObject("traitDetail");
+            JSONObject states = new JSONObject();
+            JSONArray statesArr = traitDetail.optJSONArray("states");
+            for (int i = 0; i < statesArr.length(); i++) {
+                JSONObject stateItem = statesArr.optJSONObject(i);
+                Iterator<String> key = stateItem.keys();
+                String firstKey = key.next();
+                JSONObject keyData = stateItem.optJSONObject(firstKey);
+                JSONObject payloadSchema = keyData.optJSONObject("payloadSchema");
+                String type = payloadSchema.optString("type");
+                try {
+                    switch (type) {
+                        case "integer": {
+                            int max = payloadSchema.optInt("maximum", 0);
+                            int min = payloadSchema.optInt("minimum", 0);
+                            states.put(firstKey, random.nextInt(max - min) + min);
+                        }
+                        break;
+                        case "boolean":
+                            states.put(firstKey, random.nextInt() % 2 == 0);
+                            break;
+                    }
+                    alias.put("states", states);
+                } catch (JSONException e) {
+                    LogUtil.error(e.getMessage());
+                }
+            }
+        }
+    }
+
+    public OnStatesChangedListener getOnStatesChangedListener() {
+        return mOnStatesChangedListener;
+    }
+
+    public void setOnStatesChangedListener(OnStatesChangedListener mOnStatesChangedListener) {
+        this.mOnStatesChangedListener = mOnStatesChangedListener;
+    }
+
+    public OnCommandReceivedListener getOnCommandReceivedListener() {
+        return mOnCommandReceivedListener;
+    }
+
+    public void setOnCommandReceivedListener(OnCommandReceivedListener mOnCommandReceivedListener) {
+        this.mOnCommandReceivedListener = mOnCommandReceivedListener;
+    }
 
 }
