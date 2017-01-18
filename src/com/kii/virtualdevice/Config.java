@@ -13,6 +13,7 @@ public class Config {
 
     public static boolean enableLOGD = true;
     public static final String THING_PASSWORD = "virtual_device";
+    public static final String VIRTUAL_DEVICE_BUCKET = "virtual_device";
     public static int QoS = 0;
     public static int HTTP_PORT = 8129;
     public static int DEFAULT_MSG_QUEUE_SIZE = 100;
