@@ -1,32 +1,9 @@
-var output = new Object();
 var action = {};
 var states = {};
 
-function parseJSON(json) { return convert(JSON.parse(json)); }
-
-function convert(object) {
-    if (isObject(object)) return toHashMap(object);
-    if (isArray(object)) return toArray(object);
-    return object;
-}
-
-function toHashMap(object) {
-    var map = new java.util.HashMap();
-    for (key in object) map.put(key, convert(object[key]));
-    return map;
-}
-
-function toArray(object) {
-    var array = Java.to(object, "java.lang.Object[]");
-    for (var index = 0, len = array.length; index < len; index++) array[index] = convert(array[index]);
-    return array;
-}
-
-function isObject(object) { return Object.prototype.toString.call(object) === "[object Object]"; }
-function isArray(object) { return Object.prototype.toString.call(object) === "[object Array]"; }
 
 function run(input) {
-    var object = parseJSON(input);
+    var object = JSON.parse(input)
     action = object.action;
     states = object.states;
     if (action.setPower) {
@@ -34,25 +11,24 @@ function run(input) {
     } else if (action.setBrightness) {
         interpretSetBrightness();
     }
+    str = JSON.stringify(states);
+    print(str);
 }
 
-function reAssign() {
-    output.action = action;
-    output.states = states;
 
-    return output;
-}
-
-function interpretSetPower(object) {
+function interpretSetPower() {
     if (action.setPower == true) {
+        states.power = true;
         if (states.brightness < 10) {
             states.brightness = 10;
         }
+    } else {
+        states.power = false;
     }
-    reAssign();
 }
 
-function interpretSetBrightness(object) {
+function interpretSetBrightness() {
+
     if (action.setBrightness != states.brightness) {
         states.power = true;
     }
@@ -60,6 +36,7 @@ function interpretSetBrightness(object) {
     if (action.setBrightness == 0) {
         states.power = false;
     }
-    reAssign();
+
+    states.brightness = action.setBrightness;
 }
 
