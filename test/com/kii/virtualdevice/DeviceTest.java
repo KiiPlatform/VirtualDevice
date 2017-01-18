@@ -39,6 +39,7 @@ public class DeviceTest {
         Device device = Device.createNewDevice("VirtualDevice_6e153cbc-eeac-4862-8dae-ebf9baaed08a", user.optString("id"), user.optString("access_token"), "Lamp", "V1");
         try {
             device.start();
+            device.setGenRandomStatePeriod(10);
         } catch (IOException e) {
             e.printStackTrace();
         }

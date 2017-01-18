@@ -95,7 +95,7 @@ public class Device implements MqttCallback {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 String result = response.body().string();
-                LogUtil.debug(result);
+                LogUtil.debug("storeThingToBucket:\n" + result);
                 return true;
             }
         } catch (IOException e) {
@@ -136,7 +136,7 @@ public class Device implements MqttCallback {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     String result = response.body().string();
-                    LogUtil.debug(result);
+                    LogUtil.debug("listMyDevices\n" + result);
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray results = jsonObject.optJSONArray("results");
                     for (int i = 0; i < results.length(); i++) {
@@ -181,7 +181,7 @@ public class Device implements MqttCallback {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 String result = response.body().string();
-                LogUtil.debug(result);
+                LogUtil.debug("onboarding\n" + result);
                 JSONObject jsonObject = null;
                 jsonObject = new JSONObject(result);
 
@@ -251,7 +251,7 @@ public class Device implements MqttCallback {
                 break;
             }
         }
-        genRandomStatus();
+        genRandomStatus(true);
     }
 
 
@@ -388,7 +388,6 @@ public class Device implements MqttCallback {
         new Thread(() -> {
             String url = Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/targets/THING:" + thingID
                     + "/commands/" + commandID + "/action-results";
-            LogUtil.debug(url);
             LogUtil.debug(jsonBody.toString());
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/vnd.kii.CommandResultsUpdateRequest+json"),
@@ -427,7 +426,6 @@ public class Device implements MqttCallback {
             LogUtil.error(e.getMessage());
         }
         String url = Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/targets/THING:" + thingID + "/states";
-        LogUtil.debug(uploadData.toString());
         RequestBody body = RequestBody.create(
                 MediaType.parse("application/vnd.kii.MultipleTraitState+json"),
                 uploadData.toString()
@@ -438,7 +436,7 @@ public class Device implements MqttCallback {
                 .put(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            LogUtil.debug(String.valueOf(response.code()));
+            LogUtil.debug("uploadStates:" + uploadData.toString() + " result:" + String.valueOf(response.code()));
             if (response.isSuccessful()) {
                 return true;
             }
@@ -478,6 +476,9 @@ public class Device implements MqttCallback {
      * @param period Unit: Seconds
      */
     public void setGenRandomStatePeriod(int period) {
+        if (mqttClient == null || !mqttClient.isConnected()) {
+            throw new RuntimeException("setGenRandomStatePeriod after start device");
+        }
         this.genRandomStatePeriod = period;
         if (genRandomStateThread != null) {
             genRandomStateThread.interrupt();
@@ -490,7 +491,7 @@ public class Device implements MqttCallback {
                 public void run() {
                     while (!isInterrupted()) {
                         try {
-                            genRandomStatus();
+                            genRandomStatus(false);
                             sleep(period * 1000);
                         } catch (InterruptedException e) {
                             break;
@@ -545,7 +546,7 @@ public class Device implements MqttCallback {
         }
     }
 
-    public void genRandomStatus() {
+    public void genRandomStatus(boolean isInitData) {
         for (JSONObject alias : deviceAlias.values()) {
             JSONObject traitDetail = alias.optJSONObject("traitDetail");
             JSONObject states = new JSONObject();
@@ -573,6 +574,13 @@ public class Device implements MqttCallback {
                 } catch (JSONException e) {
                     LogUtil.error(e.getMessage());
                 }
+            }
+        }
+        if (!isInitData && isUploadStateOnChanged()) {
+            try {
+                uploadStates();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
