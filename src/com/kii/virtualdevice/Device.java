@@ -50,6 +50,7 @@ public class Device implements MqttCallback {
 
 
     private HashMap<String, JSONObject> deviceAlias = new HashMap<>();
+    private HashMap<String, String> aliasJS = new HashMap<>();
     OnStatesChangedListener mOnStatesChangedListener = null;
     OnCommandReceivedListener mOnCommandReceivedListener = null;
 
@@ -234,6 +235,17 @@ public class Device implements MqttCallback {
                         LogUtil.error(e.getMessage());
                         throw new RuntimeException("Cannot read trait file:" + trait + ".json");
                     }
+                    file = new File(name + ".js");
+                    try {
+                        if (file.exists()) {
+                            fileData = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())), "UTF-8");
+                            if (fileData != null) {
+                                aliasJS.put(name, fileData);
+                            }
+                        }
+                    } catch (Exception e) {
+                        LogUtil.error(e.getMessage());
+                    }
                     deviceAlias.put(name, aliasItem);
                 }
                 break;
@@ -319,6 +331,87 @@ public class Device implements MqttCallback {
         if (mOnCommandReceivedListener != null) {
             mOnCommandReceivedListener.onCommandReceived(msgData);
         }
+
+        JSONObject jsonObject = new JSONObject(msgData);
+        jsonObject.put("time", System.currentTimeMillis());
+        synchronized (messageQueue) {
+            while (messageQueue.size() >= messageQueueSize) {
+                messageQueue.remove(0);
+            }
+            messageQueue.add(jsonObject);
+        }
+        JSONArray actions = jsonObject.optJSONArray("actions");
+        final String commandID = jsonObject.optString("commandID");
+        JSONArray actionResults = new JSONArray();
+        for (int i = 0; i < actions.length(); i++) {
+            JSONObject actionItem = actions.getJSONObject(i);
+            Iterator<String> keyIterator = actionItem.keys();
+            if (keyIterator.hasNext()) {
+                String aliasName = keyIterator.next();
+                JSONObject actionResultItem = new JSONObject();
+                actionResults.put(actionResultItem);
+                JSONArray aliasActionResults = new JSONArray();
+                actionResultItem.put(aliasName, aliasActionResults);
+                JSONArray aliasActions = actionItem.getJSONArray(aliasName);
+
+                String JS = aliasJS.get(aliasName);
+                JSONObject aliasItem = deviceAlias.get(aliasName);
+                for (int j = 0; j < aliasActions.length(); j++) {
+                    JSONObject actionDetail = aliasActions.getJSONObject(j);
+                    String actionName = (String) actionDetail.keys().next();
+                    if (JS != null) {
+                        try {
+                            JSONObject jsInput = new JSONObject();
+                            jsInput.put("action", actionDetail);
+                            jsInput.put("states", aliasItem.optJSONObject("states"));
+                            JSONObject states = JSHandler.interpret(JS, "run", jsInput);
+                            aliasItem.put("states", states);
+                        } catch (Exception e) {
+                            LogUtil.error(e.getMessage());
+                        }
+                        JSONObject resultItem = new JSONObject();
+                        JSONObject resultItemDetail = new JSONObject();
+                        resultItemDetail.put("succeeded", true);
+                        resultItem.put(actionName, resultItemDetail);
+                        aliasActionResults.put(resultItem);
+                    }
+                }
+            }
+        }
+
+        if (mOnStatesChangedListener != null) {
+            mOnStatesChangedListener.onStatesChanged();
+        }
+
+        final JSONObject jsonBody = new JSONObject();
+        jsonBody.put("actionResults", actionResults);
+        new Thread(() -> {
+            String url = Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/targets/THING:" + thingID
+                    + "/commands/" + commandID + "/action-results";
+            LogUtil.debug(url);
+            LogUtil.debug(jsonBody.toString());
+            RequestBody body = RequestBody.create(
+                    MediaType.parse("application/vnd.kii.CommandResultsUpdateRequest+json"),
+                    jsonBody.toString()
+            );
+            Request request = new Request.Builder()
+                    .url(url)
+                    .header("Authorization", "Bearer " + thingAccessToken)
+                    .put(body)
+                    .build();
+            try (Response response = client.newCall(request).execute()) {
+                LogUtil.debug("Send action results:" + String.valueOf(response.code()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (isUploadStateOnChanged()) {
+                try {
+                    uploadStates();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 

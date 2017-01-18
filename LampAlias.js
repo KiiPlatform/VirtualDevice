@@ -6,9 +6,9 @@ function run(input) {
     var object = JSON.parse(input)
     action = object.action;
     states = object.states;
-    if (action.setPower) {
+    if (action.hasOwnProperty('setPower')) {
         interpretSetPower();
-    } else if (action.setBrightness) {
+    } else if (action.hasOwnProperty('setBrightness')) {
         interpretSetBrightness();
     }
     str = JSON.stringify(states);
