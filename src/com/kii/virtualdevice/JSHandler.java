@@ -12,14 +12,14 @@ import javax.script.ScriptException;
  */
 public class JSHandler {
 
-    static JSONObject interpert(String JSScript, String functionName, JSONObject input) throws ScriptException, NoSuchMethodException {
+    static Object interpret(String JSScript, String functionName, JSONObject input) throws ScriptException, NoSuchMethodException {
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("JavaScript");
         engine.eval(JSScript);
         Invocable inv = (Invocable) engine;
         inv.invokeFunction(functionName, input);
         Object output = engine.get("output");
-        return new JSONObject(output);
+        return output;
     }
 
 }
