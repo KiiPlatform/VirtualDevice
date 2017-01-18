@@ -52,8 +52,8 @@ Lamp-V1
 
 curl -v -X POST \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
--H "Content-Type:application/vnd.kii.TraitCreationRequest+json"
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/Lamp-V1/versions"
+-H "Content-Type:application/vnd.kii.TraitCreationRequest+json" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/Lamp-V1/versions" \
 -d '{
   "actions" : [
     {
@@ -106,15 +106,18 @@ curl -v -X POST \
     }
   ],
   "dataGroupingInterval" : "15_MINUTES"
-'}
+}'
+
+"traitVersion" : 1
 
 EnvironmentSensor-V1
 
 curl -v -X POST \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
--H "Content-Type:application/vnd.kii.TraitCreationRequest+json"
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/EnvironmentSensor-V1/versions"
+-H "Content-Type:application/vnd.kii.TraitCreationRequest+json" \
+"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/EnvironmentSensor-V1/versions" \
 -d '{
+  "actions" : [ ],
   "states" : [
     {
       "CO2" : {
@@ -122,7 +125,7 @@ curl -v -X POST \
         "payloadSchema" : {
           "maximum" : 2000,
           "minimum" : 0,
-          "type" : "int",
+          "type" : "integer",
           "unit" : "ppm"
         }
       }
@@ -133,98 +136,90 @@ curl -v -X POST \
         "payloadSchema" : {
           "maximum" : 1,
           "minimum" : 0,
-          "type" : "int"
+          "type" : "integer"
         }
       }
     },
   {
-      "Smoke" : {
-        "description" : "The current CO2",
+      "Temperature" : {
+        "description" : "The current thing temperature",
         "payloadSchema" : {
           "maximum" : 990,
           "minimum" : -200,
-          "type" : "float",
-          "unit" : "˚C"
+          "type" : "number"
         }
       }
     },
     {
-      "VOD" : {
-        "description" : "The current CO2",
+      "VOC" : {
+        "description" : "The current quality of the air",
         "payloadSchema" : {
           "maximum" : 30,
           "minimum" : 0,
-          "type" : "int",
+          "type" : "integer",
           "unit" : "ppm"
         }
       }
     },
     {
       "Humidity" : {
-        "description" : "The current CO2",
+        "description" : "The current humidity",
         "payloadSchema" : {
           "maximum" : 99,
           "minimum" : 0,
-          "type" : "int",
+          "type" : "integer",
           "unit" : "%"
         }
       }
     },
     {
       "Noise" : {
-        "description" : "The current CO2",
+        "description" : "The current noise",
         "payloadSchema" : {
           "maximum" : 100,
           "minimum" : 30,
-          "type" : "int",
+          "type" : "integer",
           "unit" : "dB"
         }
       }
     },
     {
       "Brightness" : {
-        "description" : "The current CO2",
+        "description" : "The current brightness",
         "payloadSchema" : {
           "maximum" : 40000,
           "minimum" : 0,
-          "type" : "int",
+          "type" : "integer",
           "unit" : "Lux"
         }
       }
     },
     {
-      "ConStates" : {
-        "description" : "The current CO2",
-        "payloadSchema" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    {
       "PIR" : {
-        "description" : "The current CO2",
+        "description" : "Detects people in room",
         "payloadSchema" : {
           "maximum" : 1,
           "minimum" : 0,
-          "type" : "int",
+          "type" : "integer"
         }
       }
     },
     {
-      "PM25" : {
-        "description" : "The current CO2",
+      "PM2.5" : {
+        "description" : "The current level of suspended particles",
         "payloadSchema" : {
           "maximum" : 999,
           "minimum" : 0,
-          "type" : "int",
+          "type" : "integer",
           "unit" : "ug/m3"
         }
       }
     }
   ],
   "dataGroupingInterval" : "15_MINUTES"
-'}
+}'
 
+"traitVersion" : 1
 
 Create thing type
 -----------------
@@ -234,24 +229,26 @@ Lamp
 curl -v -X PUT \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
 -H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp" \
+"https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types/Lamp" \
 -d ' {
   "simpleFlow" : true,
     "verificationCodeFlowStartedByUser" : true,
     "verificationCodeFlowStartedByThing" : true
 }'
+"createdAt" : 1484640875701
 
 EnvironmentSensor
 
 curl -v -X PUT \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
 -H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor" \
+"https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types/EnvironmentSensor" \
 -d ' {
   "simpleFlow" : true,
     "verificationCodeFlowStartedByUser" : true,
     "verificationCodeFlowStartedByThing" : true
 }'
+"createdAt" : 1484640894395
 
 
 Create firmware version
@@ -261,13 +258,13 @@ V1 Lamp
 
 curl -v -X PUT \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp/firmware-versions/V1"
+"https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types/Lamp/firmware-versions/V1"
 
 V1 EnvironmentSensor
 
 curl -v -X PUT \
 -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
-"https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions/V1"
+"https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions/V1"
 
 
 Create trait alias
@@ -278,8 +275,7 @@ LampAlias
 curl -v -X PUT \
  -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
  -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
- "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/
-thing-types/Lamp/firmware-versions/V1/aliases/LampAlias" \
+ "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp/firmware-versions/V1/aliases/LampAlias" \
  -d '{
    "trait" : "Lamp-V1",
    "traitVersion" : 1
@@ -290,17 +286,11 @@ thing-types/Lamp/firmware-versions/V1/aliases/LampAlias" \
  curl -v -X PUT \
  -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
  -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
- "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/
-thing-types/EnvironmentSensor/firmware-versions/V1/aliases/EnvironmentSensorAlias" \
+ "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions/V1/aliases/EnvironmentSensorAlias" \
  -d '{
    "trait" : "EnvironmentSensor-V1",
    "traitVersion" : 1
  }'
-
-
-Get all traits of app
----------------------
-
 
 
 Finalize trait
@@ -310,15 +300,16 @@ Lamp-V1
 
 curl -v -X PUT \
   -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
-  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/
-Lamp-V1/versions/1/finalize"
+  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/Lamp-V1/versions/1/finalize"
 
 EnvironmentSensor-V1
 
 curl -v -X PUT \
   -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" \
-  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/
-EnvironmentSensor-V1/versions/1/finalize"
+  "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/EnvironmentSensor-V1/versions/1/finalize"
+
+
+=======================================================================================================================
 
 
 Register state to trait 
@@ -354,3 +345,58 @@ thing:{THING_ID}/commands" \
     "issuer" : "user:{OWNER_USER_ID}"
   }' 
 
+Get all traits of app
+---------------------
+curl -v -X GET -H "Authorization : Bearer 5GSe8B616AbOaCPOnwrY9RunwLvUqwTFZgQZafyTeWs" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits"
+
+
+Get thing types of app
+----------------------
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" -H "Content-Type: application/vnd.kii.ThingTypesRetrievalResponse+json" "https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types"
+
+Get firmware versions of a thing type
+-------------------------------------
+
+Lamp
+
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" "https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types/Lamp/firmware-versions"
+
+EnvironmentSensor
+
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" "https://api-development-jp.internal.kii.com/api/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions"
+
+
+Get trait detail for a particular version
+-----------------------------------------
+
+Lamp
+
+curl -v -X GET -H "Authorization : Bearer 5GSe8B616AbOaCPOnwrY9RunwLvUqwTFZgQZafyTeWs" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/Lamp-V1/versions/1"
+
+EnvironmentSensor
+
+curl -v -X GET -H "Authorization : Bearer 5GSe8B616AbOaCPOnwrY9RunwLvUqwTFZgQZafyTeWs" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/traits/EnvironmentSensor-V1/versions/1"
+
+
+Get all aliases for a thing type and firmware version
+-----------------------------------------------------
+
+LampAlias (Lamp)
+
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp/firmware-versions/V1/aliases"
+
+EnvironmentSensorAlias (EnvironmentSensor)
+
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions/V1/aliases"
+
+
+Get alias detail for a thing type and firmware version
+------------------------------------------------------
+
+LampAlias (Lamp)
+
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/Lamp/firmware-versions/V1/aliases/LampAlias"
+
+EnvironmentSensorAlias (EnvironmentSensor)
+
+curl -v -X GET -H "Authorization : Bearer 5heVMH-7IRyprejd3qVdJ-DxqXjNvf7_7JK_w4whz70" "https://api-development-jp.internal.kii.com/thing-if/apps/e88799de/configuration/thing-types/EnvironmentSensor/firmware-versions/V1/aliases/EnvironmentSensorAlias"
