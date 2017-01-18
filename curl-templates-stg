@@ -1,0 +1,402 @@
+VirtualDevice
+
+APP ID
+f187824e
+APP KEY
+9845dd07b3d0bfa4f38140efef8f70ba
+CLIENT ID
+3b0e243b97dc1aecc4fca4be273ec756
+CLIENT SECRET
+0a5040afb567feab2021e733333f6387fa463b23c9ab4011a81bd1d8a861952c
+
+UFE Endpoint: https://qa21.internal.kii.com/api
+ThingIF: https://qa21.internal.kii.com/thing-if
+
+
+Get app admin
+-------------
+curl -v -X POST \
+  -H "Content-Type: application/vnd.kii.OauthTokenRequest+json" \
+  "https://qa21.internal.kii.com/api/apps/f187824e/oauth2/token" \
+  -d '{
+    "client_id" : "3b0e243b97dc1aecc4fca4be273ec756",
+    "client_secret" : "0a5040afb567feab2021e733333f6387fa463b23c9ab4011a81bd1d8a861952c",
+    "grant_type" : "client_credentials"
+  }'
+
+  "id" : "3b0e243b97dc1aecc4fca4be273ec756",
+  "access_token" : "JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI",
+  "expires_in" : 2147483646,
+  "token_type" : "bearer"
+
+User token
+----------
+curl -v -X POST \
+  -H "Content-Type: application/vnd.kii.OauthTokenRequest+json" \
+  "https://qa21.internal.kii.com/api/apps/f187824e/oauth2/token" \
+  -d '{
+    "username" : "evan",
+    "password" : "123456",
+    "grant_type" : "password"
+  }'
+
+  "id" : "0f2968a00022-4beb-6e11-24dd-02f8698e",
+  "access_token" : "20zrddmPkOFcfam7ihQw9yI9UpKfc2XFy5TrRd0GZdE",
+  "expires_in" : 2147483646,
+  "token_type" : "bearer"
+
+Create trait:
+-------------
+
+Lamp-V1
+
+curl -v -X POST \
+-H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+-H "Content-Type:application/vnd.kii.TraitCreationRequest+json" \
+"https://qa21.internal.kii.com/thing-if/apps/f187824e/traits/Lamp-V1/versions" \
+-d '{
+  "actions" : [
+    {
+      "setPower" : {
+        "description" : "Turn the power on/off",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "setBrightness" : {
+        "description" : "Configure the brightness",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    }
+  ],
+  "states" : [
+    {
+      "power" : {
+        "description" : "The current power state",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "brightness" : {
+        "description" : "The current brightness of the lamp",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    },
+    {
+      "battery" : {
+        "description" : "The current battery of the lamp",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    }
+  ],
+  "dataGroupingInterval" : "15_MINUTES"
+}'
+
+"traitVersion" : 1
+
+EnvironmentSensor-V1
+
+curl -v -X POST \
+-H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+-H "Content-Type:application/vnd.kii.TraitCreationRequest+json" \
+"https://qa21.internal.kii.com/thing-if/apps/f187824e/traits/EnvironmentSensor-V1/versions" \
+-d '{
+  "actions" : [ ],
+  "states" : [
+    {
+      "CO2" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 2000,
+          "minimum" : 0,
+          "type" : "integer",
+          "unit" : "ppm"
+        }
+      }
+    },
+    {
+      "Smoke" : {
+        "description" : "The current CO2",
+        "payloadSchema" : {
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "integer"
+        }
+      }
+    },
+  {
+      "Temperature" : {
+        "description" : "The current thing temperature",
+        "payloadSchema" : {
+          "maximum" : 990,
+          "minimum" : -200,
+          "type" : "number"
+        }
+      }
+    },
+    {
+      "VOC" : {
+        "description" : "The current quality of the air",
+        "payloadSchema" : {
+          "maximum" : 30,
+          "minimum" : 0,
+          "type" : "integer",
+          "unit" : "ppm"
+        }
+      }
+    },
+    {
+      "Humidity" : {
+        "description" : "The current humidity",
+        "payloadSchema" : {
+          "maximum" : 99,
+          "minimum" : 0,
+          "type" : "integer",
+          "unit" : "%"
+        }
+      }
+    },
+    {
+      "Noise" : {
+        "description" : "The current noise",
+        "payloadSchema" : {
+          "maximum" : 100,
+          "minimum" : 30,
+          "type" : "integer",
+          "unit" : "dB"
+        }
+      }
+    },
+    {
+      "Brightness" : {
+        "description" : "The current brightness",
+        "payloadSchema" : {
+          "maximum" : 40000,
+          "minimum" : 0,
+          "type" : "integer",
+          "unit" : "Lux"
+        }
+      }
+    },
+    {
+      "PIR" : {
+        "description" : "Detects people in room",
+        "payloadSchema" : {
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "integer"
+        }
+      }
+    },
+    {
+      "PM2.5" : {
+        "description" : "The current level of suspended particles",
+        "payloadSchema" : {
+          "maximum" : 999,
+          "minimum" : 0,
+          "type" : "integer",
+          "unit" : "ug/m3"
+        }
+      }
+    }
+  ],
+  "dataGroupingInterval" : "15_MINUTES"
+}'
+
+"traitVersion" : 1
+
+Create thing type
+-----------------
+
+Lamp
+
+curl -v -X PUT \
+-H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+-H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
+"https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types/Lamp" \
+-d ' {
+  "simpleFlow" : true,
+    "verificationCodeFlowStartedByUser" : true,
+    "verificationCodeFlowStartedByThing" : true
+}'
+"createdAt" : 1484640875701
+
+EnvironmentSensor
+
+curl -v -X PUT \
+-H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+-H "Content-Type: application/vnd.kii.ThingTypeConfigurationRequest+json" \
+"https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types/EnvironmentSensor" \
+-d ' {
+  "simpleFlow" : true,
+    "verificationCodeFlowStartedByUser" : true,
+    "verificationCodeFlowStartedByThing" : true
+}'
+"createdAt" : 1484640894395
+
+
+Create firmware version
+-----------------------
+
+V1 Lamp
+
+curl -v -X PUT \
+-H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+"https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types/Lamp/firmware-versions/V1"
+
+V1 EnvironmentSensor
+
+curl -v -X PUT \
+-H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+"https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types/EnvironmentSensor/firmware-versions/V1"
+
+
+Create trait alias
+------------------
+
+LampAlias
+
+curl -v -X PUT \
+ -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+ -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
+ "https://qa21.internal.kii.com/thing-if/apps/f187824e/configuration/thing-types/Lamp/firmware-versions/V1/aliases/LampAlias" \
+ -d '{
+   "trait" : "Lamp-V1",
+   "traitVersion" : 1
+ }'
+
+ EnvironmentSensorAlias
+
+ curl -v -X PUT \
+ -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+ -H "Content-Type: application/vnd.kii.TraitAliasCreationRequest+json" \
+ "https://qa21.internal.kii.com/thing-if/apps/f187824e/configuration/thing-types/EnvironmentSensor/firmware-versions/V1/aliases/EnvironmentSensorAlias" \
+ -d '{
+   "trait" : "EnvironmentSensor-V1",
+   "traitVersion" : 1
+ }'
+
+
+Finalize trait
+--------------
+
+Lamp-V1
+
+curl -v -X PUT \
+  -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+  "https://qa21.internal.kii.com/thing-if/apps/f187824e/traits/Lamp-V1/versions/1/finalize"
+
+EnvironmentSensor-V1
+
+curl -v -X PUT \
+  -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" \
+  "https://qa21.internal.kii.com/thing-if/apps/f187824e/traits/EnvironmentSensor-V1/versions/1/finalize"
+
+
+=======================================================================================================================
+
+
+Register state to trait 
+-----------------------
+curl -v -X PUT \
+  -H "Authorization: Bearer ｛THING_ACCESS_TOKEN}" \
+  -H "Content-Type: application/vnd.kii.MultipleTraitState+json" \
+  "https://qa21.internal.kii.com/thing-if/apps/{APP_ID}/targets/
+thing:{THING_ID}/states" \
+  -d '{
+    "BasicFeatureAlias" : {
+      "currentTemperature" : 26
+    }
+  }'
+
+
+Send a command
+--------------
+curl -v -X POST \
+  -H "Authorization: Bearer ｛OWNER_ACCESS_TOKEN}" \
+  -H "Content-Type: application/vnd.kii.CommandCreationRequest+json" \
+  "https://qa21.internal.kii.com/thing-if/apps/{APP_ID}/targets/
+thing:{THING_ID}/commands" \
+  -d '{
+    "actions": [
+      {
+        "BasicFeatureAlias": [
+          {"turnPower" : true},
+          {"setPresetTemperature": 26}
+        ]
+      }
+    ],
+    "issuer" : "user:{OWNER_USER_ID}"
+  }' 
+
+Get all traits of app
+---------------------
+curl -v -X GET -H "Authorization : Bearer 20zrddmPkOFcfam7ihQw9yI9UpKfc2XFy5TrRd0GZdE" "https://qa21.internal.kii.com/thing-if/apps/f187824e/traits"
+
+
+Get thing types of app
+----------------------
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" -H "Content-Type: application/vnd.kii.ThingTypesRetrievalResponse+json" "https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types"
+
+Get firmware versions of a thing type
+-------------------------------------
+
+Lamp
+
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" "https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types/Lamp/firmware-versions"
+
+EnvironmentSensor
+
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" "https://qa21.internal.kii.com/api/apps/f187824e/configuration/thing-types/EnvironmentSensor/firmware-versions"
+
+
+Get trait detail for a particular version
+-----------------------------------------
+
+Lamp
+
+curl -v -X GET -H "Authorization : Bearer 20zrddmPkOFcfam7ihQw9yI9UpKfc2XFy5TrRd0GZdE" "https://qa21.internal.kii.com/thing-if/apps/f187824e/traits/Lamp-V1/versions/1"
+
+EnvironmentSensor
+
+curl -v -X GET -H "Authorization : Bearer 20zrddmPkOFcfam7ihQw9yI9UpKfc2XFy5TrRd0GZdE" "https://qa21.internal.kii.com/thing-if/apps/f187824e/traits/EnvironmentSensor-V1/versions/1"
+
+
+Get all aliases for a thing type and firmware version
+-----------------------------------------------------
+
+LampAlias (Lamp)
+
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" "https://qa21.internal.kii.com/thing-if/apps/f187824e/configuration/thing-types/Lamp/firmware-versions/V1/aliases"
+
+EnvironmentSensorAlias (EnvironmentSensor)
+
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" "https://qa21.internal.kii.com/thing-if/apps/f187824e/configuration/thing-types/EnvironmentSensor/firmware-versions/V1/aliases"
+
+
+Get alias detail for a thing type and firmware version
+------------------------------------------------------
+
+LampAlias (Lamp)
+
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" "https://qa21.internal.kii.com/thing-if/apps/f187824e/configuration/thing-types/Lamp/firmware-versions/V1/aliases/LampAlias"
+
+EnvironmentSensorAlias (EnvironmentSensor)
+
+curl -v -X GET -H "Authorization : Bearer JY3TYu4hL7Y8t58k1mZTJ77iv5gqbkOeSn-YwYtRXFI" "https://qa21.internal.kii.com/thing-if/apps/f187824e/configuration/thing-types/EnvironmentSensor/firmware-versions/V1/aliases/EnvironmentSensorAlias"
