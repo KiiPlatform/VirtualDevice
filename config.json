@@ -1,7 +1,7 @@
 {
-  "kiiAppKey" : "582b89b1e9f58e0a6101540db3f375b1",
-  "kiiSite" : "https:\/\/api-development-jp.internal.kii.com",
-  "kiiAppId" : "e88799de",
+  "kiiAppKey" : "9845dd07b3d0bfa4f38140efef8f70ba",
+  "kiiSite" : "https:\/\/qa21.internal.kii.com",
+  "kiiAppId" : "f187824e",
   "SupportedTypes" : [
     {
       "alias" : [

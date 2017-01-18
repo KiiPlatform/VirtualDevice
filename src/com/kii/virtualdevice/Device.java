@@ -263,8 +263,9 @@ public class Device implements MqttCallback {
     }
 
     @Override
-    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-
+    public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+        LogUtil.debug("messageArrived topic:" + topic + " MqttMessage: " + mqttMessage);
+        String msgData = new String(mqttMessage.getPayload(), "UTF-8");
     }
 
 
