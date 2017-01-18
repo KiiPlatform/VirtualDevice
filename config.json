@@ -1,5 +1,22 @@
 {
-  "kiiAppId": "e88799de",
-  "kiiAppKey": "582b89b1e9f58e0a6101540db3f375b1",
-  "kiiSite": "https:\/\/api-development-jp.internal.kii.com"
+  "kiiAppKey" : "582b89b1e9f58e0a6101540db3f375b1",
+  "kiiSite" : "https:\/\/api-development-jp.internal.kii.com",
+  "kiiAppId" : "e88799de",
+  "SupportedTypes" : [
+    {
+      "trait" : "Lamp-V1",
+      "firmwareVersion" : "V1",
+      "thingType" : "Lamp"
+    },
+    {
+      "trait" : "Lamp-V2",
+      "firmwareVersion" : "V2",
+      "thingType" : "Lamp"
+    },
+    {
+      "trait" : "EnvironmentSensor-V1",
+      "firmwareVersion" : "V1",
+      "thingType" : "EnvironmentSensor "
+    }
+  ]
 }

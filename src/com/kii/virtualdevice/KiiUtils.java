@@ -24,11 +24,10 @@ public class KiiUtils {
                 .url(Config.KiiSiteUrl + "/api/apps/" + Config.KiiAppId + "/oauth2/token")
                 .post(body)
                 .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 String result = response.body().string();
+                LogUtil.debug(result);
                 JSONObject jsonObject = null;
                 jsonObject = new JSONObject(result);
                 return jsonObject;

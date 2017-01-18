@@ -13,12 +13,14 @@ public class Config {
 
     public static boolean enableLOGD = true;
     public static final String THING_PASSWORD = "virtual_device";
+    public static final String VIRTUAL_DEVICE_BUCKET = "virtual_device";
     public static int QoS = 0;
     public static int HTTP_PORT = 8129;
     public static int DEFAULT_MSG_QUEUE_SIZE = 100;
 
 
     public static String KiiAppId = null;
+    public static String KiiAppKey = null;
     public static String KiiSiteUrl = null;
 
 
@@ -38,6 +40,7 @@ public class Config {
         try {
             JSONObject json = new JSONObject(fileData);
             KiiAppId = json.getString("kiiAppId");
+            KiiAppKey = json.getString("kiiAppKey");
             KiiSiteUrl = json.getString("kiiSite");
             switch (KiiSiteUrl) {
                 case "JP":
