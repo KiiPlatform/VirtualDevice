@@ -4,19 +4,24 @@
   "kiiAppId" : "e88799de",
   "SupportedTypes" : [
     {
-      "trait" : "Lamp-V1",
+      "alias" : [
+        {
+          "trait" : "Lamp-V1",
+          "name" : "LampAlias"
+        }
+      ],
       "firmwareVersion" : "V1",
       "thingType" : "Lamp"
     },
     {
-      "trait" : "Lamp-V2",
-      "firmwareVersion" : "V2",
-      "thingType" : "Lamp"
-    },
-    {
-      "trait" : "EnvironmentSensor-V1",
+      "alias" : [
+        {
+          "trait" : "EnvironmentSensor-V1",
+          "name" : "EnvironmentSensorAlias"
+        }
+      ],
       "firmwareVersion" : "V1",
-      "thingType" : "EnvironmentSensor "
+      "thingType" : "EnvironmentSensor"
     }
   ]
 }
