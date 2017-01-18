@@ -1,0 +1,102 @@
+{
+  "actions" : [],
+  "dataGroupingInterval" : "15_MINUTES",
+  "states" : [
+    {
+      "CO2" : {
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 2000,
+          "type" : "integer",
+          "unit" : "ppm"
+        },
+        "description" : "The current CO2"
+      }
+    },
+    {
+      "Smoke" : {
+        "payloadSchema" : {
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "integer"
+        },
+        "description" : "The current CO2"
+      }
+    },
+    {
+      "Temperature" : {
+        "payloadSchema" : {
+          "maximum" : 990,
+          "minimum" : -200,
+          "type" : "number"
+        },
+        "description" : "The current thing temperature"
+      }
+    },
+    {
+      "VOC" : {
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 30,
+          "type" : "integer",
+          "unit" : "ppm"
+        },
+        "description" : "The current quality of the air"
+      }
+    },
+    {
+      "Humidity" : {
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 99,
+          "type" : "integer",
+          "unit" : "%"
+        },
+        "description" : "The current humidity"
+      }
+    },
+    {
+      "Noise" : {
+        "payloadSchema" : {
+          "minimum" : 30,
+          "maximum" : 100,
+          "type" : "integer",
+          "unit" : "dB"
+        },
+        "description" : "The current noise"
+      }
+    },
+    {
+      "Brightness" : {
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 40000,
+          "type" : "integer",
+          "unit" : "Lux"
+        },
+        "description" : "The current brightness"
+      }
+    },
+    {
+      "PIR" : {
+        "payloadSchema" : {
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "integer"
+        },
+        "description" : "Detects people in room"
+      }
+    },
+    {
+      "PM2.5" : {
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 999,
+          "type" : "integer",
+          "unit" : "ug\/m3"
+        },
+        "description" : "The current level of suspended particles"
+      }
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ public class Device implements MqttCallback {
     private MqttClient mqttClient = null;
 
 
-    private JSONObject deviceStates = new JSONObject();
+    private HashMap<String, JSONObject> deviceAlias = new HashMap<>();
 
 
     public Device(String vendorThingID, String userID, String userToken, String thingType, String firmwareVersion) {
@@ -43,6 +44,7 @@ public class Device implements MqttCallback {
         this.ownerToken = userToken;
         this.thingType = thingType;
         this.firmwareVersion = firmwareVersion;
+        loadTraits();
     }
 
     public static Device createNewDevice(String vendorThingID, String userID, String userToken, String thingType, String firmwareVersion) {
@@ -193,6 +195,24 @@ public class Device implements MqttCallback {
         return firmwareVersion;
     }
 
+
+    public void loadTraits() {
+        for (int i = 0; i < Config.SupportedTypes.length(); i++) {
+            JSONObject item = Config.SupportedTypes.optJSONObject(i);
+            String thingType = item.optString("thingType");
+            String firmwareVersion = item.optString("firmwareVersion");
+            if (this.thingType.equals(thingType) && this.firmwareVersion.equals(firmwareVersion)) {
+                JSONArray alias = item.optJSONArray("alias");
+                for (int j = 0; j < alias.length(); j++) {
+                    JSONObject aliasItem = alias.optJSONObject(j);
+                    String name = aliasItem.optString("name");
+                    String trait = aliasItem.optString("trait");
+                    deviceAlias.put(name, aliasItem);
+                }
+                break;
+            }
+        }
+    }
 
     public void start() throws IOException {
         if (mqttEndpoint == null) {

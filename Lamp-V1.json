@@ -1,0 +1,53 @@
+{
+  "actions" : [
+    {
+      "setPower" : {
+        "description" : "Turn the power on/off",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "setBrightness" : {
+        "description" : "Configure the brightness",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    }
+  ],
+  "states" : [
+    {
+      "power" : {
+        "description" : "The current power state",
+        "payloadSchema" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    {
+      "brightness" : {
+        "description" : "The current brightness of the lamp",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    },
+    {
+      "battery" : {
+        "description" : "The current battery of the lamp",
+        "payloadSchema" : {
+          "minimum" : 0,
+          "maximum" : 100,
+          "type" : "integer"
+        }
+      }
+    }
+  ],
+  "dataGroupingInterval" : "15_MINUTES"
+}

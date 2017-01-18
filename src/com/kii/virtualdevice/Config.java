@@ -1,5 +1,6 @@
 package com.kii.virtualdevice;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class Config {
     public static String KiiAppId = null;
     public static String KiiAppKey = null;
     public static String KiiSiteUrl = null;
-
+    public static JSONArray SupportedTypes = null;
 
     static {
         loadConfig();
@@ -59,6 +60,7 @@ public class Config {
                     KiiSiteUrl = "https://api-eu.kii.com";
                     break;
             }
+            SupportedTypes = json.getJSONArray("SupportedTypes");
         } catch (Exception e) {
             LogUtil.error(e.getMessage());
             throw new RuntimeException("Cannot load Config json file");
