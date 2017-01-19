@@ -11,8 +11,11 @@ import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Evan on 2016/12/7.
@@ -36,15 +39,37 @@ public class MainFrame {
     JFrame parentFrame;
     String token;
     String userID;
-    String firmwareVersion;
 
     java.util.List<Device> myDevices = null;
+    HashMap<String, ArrayList<String>> typeVersionMap = new HashMap<>();
+    ArrayList<String> thingTypes = new ArrayList<>();
 
     public MainFrame() {
 
-        typeComboBox.setEditable(false);
+
         for (int i = 0; i < Config.SupportedTypes.length(); i++) {
-            typeComboBox.addItem(Config.SupportedTypes.optJSONObject(i).optString("type"));
+            JSONObject item = Config.SupportedTypes.getJSONObject(i);
+            String thingType = item.getString("thingType");
+            String firmwareVersion = item.getString("firmwareVersion");
+            if (!thingTypes.contains(thingType)) {
+                thingTypes.add(thingType);
+            }
+            ArrayList<String> arr = typeVersionMap.get(thingType);
+            if (arr == null) {
+                arr = new ArrayList<>();
+                typeVersionMap.put(thingType, arr);
+            }
+            arr.add(firmwareVersion);
+        }
+
+        typeComboBox.setEditable(false);
+        for (int i = 0; i < thingTypes.size(); i++) {
+            typeComboBox.addItem(thingTypes.get(i));
+        }
+
+        ArrayList list = typeVersionMap.get(thingTypes.get(0));
+        for (int i = 0; i < list.size(); i++) {
+            fwComboBox.addItem(list.get(i));
         }
 
         loginButton.addActionListener(loginAction);
@@ -110,6 +135,18 @@ public class MainFrame {
             }
         });
 
+        typeComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                String type = thingTypes.get(typeComboBox.getSelectedIndex());
+                ArrayList list = typeVersionMap.get(type);
+                fwComboBox.removeAllItems();
+                for (int i = 0; i < list.size(); i++) {
+                    fwComboBox.addItem(list.get(i));
+                }
+            }
+        });
+
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -120,12 +157,15 @@ public class MainFrame {
                 }
                 int index = typeComboBox.getSelectedIndex();
                 final String type;
-                type = Config.SupportedTypes.optJSONObject(index).optString("type");
+                type = thingTypes.get(index);
+                index = fwComboBox.getSelectedIndex();
+                final String fw;
+                fw = typeVersionMap.get(type).get(index);
                 startGlassPane();
                 new Thread() {
                     @Override
                     public void run() {
-                        Device.createNewDevice(userID, token, type, Config.SupportedTypes.optJSONObject(index).optString("firmwareVersion"));
+                        Device.createNewDevice(userID, token, type, fw);
                         myDevices = Device.listDevices(token);
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
@@ -176,7 +216,8 @@ public class MainFrame {
                             @Override
                             public void run() {
                                 DeviceFrame frame = new DeviceFrame(device, MainFrame.this);
-                                tabbedPane.add(device.getVendorThingID(), frame.getMainPanel());
+                                String title = device.getVendorThingID();
+                                tabbedPane.add(title.substring(title.length() - 8), frame.getMainPanel());
                                 glasspane.stop();
                             }
                         });
@@ -221,7 +262,7 @@ public class MainFrame {
         if (myDevices != null) {
             for (Device device : myDevices) {
                 DefaultMutableTreeNode node = new DefaultMutableTreeNode(device);
-                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(device.getThingType());
+                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(device.getThingType() + "-" + device.getFirmwareVersion());
                 node.add(leaf);
                 leaf = new DefaultMutableTreeNode("ThingID: " + device.getThingID());
                 node.add(leaf);

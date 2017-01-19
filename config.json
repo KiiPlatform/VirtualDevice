@@ -1,37 +1,27 @@
 {
-  "kiiAppKey" : "9845dd07b3d0bfa4f38140efef8f70ba",
-  "kiiSite" : "https:\/\/qa21.internal.kii.com",
-  "kiiAppId" : "f187824e",
-  "SupportedTypes" : [
+  "kiiAppId": "f187824e", 
+  "SupportedTypes": [
     {
-      "alias" : [
+      "alias": [
         {
-          "trait" : "Lamp-V1",
-          "name" : "LampAlias"
+          "trait": "Lamp-V1", 
+          "name": "LampAlias"
         }
-      ],
-      "firmwareVersion" : "V1",
-      "thingType" : "Lamp"
-    },
+      ], 
+      "thingType": "Lamp", 
+      "firmwareVersion": "V1"
+    }, 
     {
-      "alias" : [
+      "alias": [
         {
-          "trait" : "Lamp-V2",
-          "name" : "LampAlias2"
+          "trait": "EnvironmentSensor-V1", 
+          "name": "EnvironmentSensorAlias"
         }
-      ],
-      "firmwareVersion" : "V2",
-      "thingType" : "Lamp"
-    },
-    {
-      "alias" : [
-        {
-          "trait" : "EnvironmentSensor-V1",
-          "name" : "EnvironmentSensorAlias"
-        }
-      ],
-      "firmwareVersion" : "V1",
-      "thingType" : "EnvironmentSensor"
+      ], 
+      "thingType": "EnvironmentSensor", 
+      "firmwareVersion": "V1"
     }
-  ]
+  ], 
+  "kiiAppKey": "9845dd07b3d0bfa4f38140efef8f70ba", 
+  "kiiSite": "https://qa21.internal.kii.com"
 }

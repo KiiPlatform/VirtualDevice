@@ -294,7 +294,7 @@ public class Device implements MqttCallback {
             try {
                 mqttClient.disconnect();
             } catch (MqttException e) {
-                e.printStackTrace();
+                LogUtil.error(e.getMessage());
             }
         }
         startTime = 0;
@@ -659,4 +659,8 @@ public class Device implements MqttCallback {
         this.mOnCommandReceivedListener = mOnCommandReceivedListener;
     }
 
+    @Override
+    public String toString() {
+        return vendorThingID;
+    }
 }

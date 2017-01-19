@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.kii.beehive.virtual_device.ui.MainFrame">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.kii.virtualdevice.ui.MainFrame">
   <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
       <xy x="20" y="20" width="635" height="412"/>
@@ -82,7 +82,7 @@
               <splitpane id="27505">
                 <constraints border-constraint="Center"/>
                 <properties>
-                  <dividerLocation value="160"/>
+                  <dividerLocation value="250"/>
                 </properties>
                 <border type="none"/>
                 <children>
@@ -147,7 +147,7 @@
                           </component>
                           <component id="cdac3" class="javax.swing.JComboBox" binding="fwComboBox">
                             <constraints>
-                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="1" use-parent-layout="false"/>
                             </constraints>
                             <properties/>
                           </component>

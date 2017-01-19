@@ -24,6 +24,8 @@ public class DeviceFrame implements Device.OnCommandReceivedListener, Device.OnS
     private JCheckBox updateOnChangeCheckbox;
     private JLabel infoLabel;
     private JSpinner uploadStateSpinner;
+    private JLabel vendorThingIDLabel;
+    private JLabel thingIDLabel;
     public Device device;
     MainFrame parentFrame;
 
@@ -49,7 +51,9 @@ public class DeviceFrame implements Device.OnCommandReceivedListener, Device.OnS
             }
         });
 
-        infoLabel.setText(device.getThingType() + " " + device.getThingID());
+        infoLabel.setText(device.getThingType() + "-" + device.getFirmwareVersion());
+        vendorThingIDLabel.setText("VendorThingID: " + device.getVendorThingID());
+        thingIDLabel.setText("ThingID: " + device.getThingID());
         updateOnChangeCheckbox.setSelected(device.isUploadStateOnChanged());
 
         DefaultTableModel tableModel = new DefaultTableModel(new String[]{"Field", "Value"}, 0) {

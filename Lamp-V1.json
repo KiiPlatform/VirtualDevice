@@ -1,53 +1,53 @@
 {
-  "actions" : [
+  "states": [
     {
-      "setPower" : {
-        "description" : "Turn the power on/off",
-        "payloadSchema" : {
-          "type" : "boolean"
+      "power": {
+        "description": "The current power state", 
+        "payloadSchema": {
+          "type": "boolean"
         }
       }
-    },
+    }, 
     {
-      "setBrightness" : {
-        "description" : "Configure the brightness",
-        "payloadSchema" : {
-          "minimum" : 0,
-          "maximum" : 100,
-          "type" : "integer"
+      "brightness": {
+        "description": "The current brightness of the lamp", 
+        "payloadSchema": {
+          "minimum": 0, 
+          "type": "integer", 
+          "maximum": 100
         }
       }
-    }
-  ],
-  "states" : [
+    }, 
     {
-      "power" : {
-        "description" : "The current power state",
-        "payloadSchema" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    {
-      "brightness" : {
-        "description" : "The current brightness of the lamp",
-        "payloadSchema" : {
-          "minimum" : 0,
-          "maximum" : 100,
-          "type" : "integer"
-        }
-      }
-    },
-    {
-      "battery" : {
-        "description" : "The current battery of the lamp",
-        "payloadSchema" : {
-          "minimum" : 0,
-          "maximum" : 100,
-          "type" : "integer"
+      "battery": {
+        "description": "The current battery of the lamp", 
+        "payloadSchema": {
+          "minimum": 0, 
+          "type": "integer", 
+          "maximum": 100
         }
       }
     }
-  ],
-  "dataGroupingInterval" : "15_MINUTES"
+  ], 
+  "dataGroupingInterval": "15_MINUTES", 
+  "actions": [
+    {
+      "setPower": {
+        "description": "Turn the power on/off", 
+        "payloadSchema": {
+          "type": "boolean"
+        }
+      }
+    }, 
+    {
+      "setBrightness": {
+        "description": "Configure the brightness", 
+        "payloadSchema": {
+          "minimum": 0, 
+          "type": "integer", 
+          "maximum": 100
+        }
+      }
+    }
+  ]
 }
