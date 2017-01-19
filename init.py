@@ -6,9 +6,9 @@ import argparse
 import requests
 import datetime
 
-BASE_URL = 'https://qa21.internal.kii.com'
-IOT_URL = BASE_URL + '/thing-if/'
-UFE_URL = BASE_URL + '/api/'
+#BASE_URL = 'https://qa21.internal.kii.com'
+TIF_ENDPOINT = '/thing-if/'
+UFE_ENDPOINT = '/api/'
 
 FILE_EXT = '.json'
 
@@ -59,7 +59,7 @@ def build_config():
 	print 'Generating config file...'
 	data = {}
 	data['kiiAppKey'] = args.app_key
-	data['kiiSite'] = BASE_URL
+	data['kiiSite'] = args.base_url
 	data['kiiAppId'] = args.app_id
 
 	supported_types = []
@@ -130,10 +130,10 @@ def log_json(data):
 	print json.dumps(data, indent=2)
 
 def get_thing_if_url(path):
-	return '%sapps/%s/%s' % (IOT_URL, args.app_id, path)
+	return '%sapps/%s/%s' % (args.base_url + TIF_ENDPOINT, args.app_id, path)
 
 def get_ufe_url(path):
-	return '%sapps/%s/%s' % (UFE_URL, args.app_id, path)
+	return '%sapps/%s/%s' % (args.base_url + UFE_ENDPOINT, args.app_id, path)
 
 def save_config(data, name):
 	file_name = name + FILE_EXT
@@ -147,6 +147,7 @@ def save_config(data, name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='VirtualDevice config initializer')
+    parser.add_argument('-u', '--url', dest='base_url')
     parser.add_argument('-ai', '--app_id', dest='app_id')
     parser.add_argument('-ak', '--app_key', dest='app_key')
     parser.add_argument('-ci', '--client_id', dest='client_id')
@@ -154,7 +155,8 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
 
-    if (args.app_id is None or args.app_key is None or args.client_id is None or args.client_secret is None):
+    if (args.base_url is None or args.app_id is None or args.app_key is None or 
+    	args.client_id is None or args.client_secret is None):
         parser.print_help()
     else:
         init_app()
