@@ -4,21 +4,21 @@
     {
       "alias": [
         {
-          "trait": "Lamp-V1", 
-          "name": "LampAlias"
-        }
-      ], 
-      "thingType": "Lamp", 
-      "firmwareVersion": "V1"
-    }, 
-    {
-      "alias": [
-        {
           "trait": "EnvironmentSensor-V1", 
           "name": "EnvironmentSensorAlias"
         }
       ], 
       "thingType": "EnvironmentSensor", 
+      "firmwareVersion": "V1"
+    }, 
+    {
+      "alias": [
+        {
+          "trait": "Lamp-V1", 
+          "name": "LampAlias"
+        }
+      ], 
+      "thingType": "Lamp", 
       "firmwareVersion": "V1"
     }
   ], 
