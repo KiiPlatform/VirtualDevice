@@ -10,7 +10,7 @@ import java.io.IOException;
  * Created by Evan on 2017/1/17.
  */
 public class KiiUtils {
-    static JSONObject loginKiiCloud(String username, String password) {
+    public static JSONObject loginKiiCloud(String username, String password) {
         JSONObject json = new JSONObject();
         try {
             json.put("grant_type", "password");
