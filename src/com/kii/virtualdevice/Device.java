@@ -572,11 +572,16 @@ public class Device implements MqttCallback {
                 alias.put("states", states);
             }
         }
-        if (!isInitData && isUploadStateOnChanged()) {
-            try {
-                uploadStates();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (!isInitData) {
+            if (mOnStatesChangedListener != null) {
+                mOnStatesChangedListener.onStatesChanged();
+            }
+            if (isUploadStateOnChanged()) {
+                try {
+                    uploadStates();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
