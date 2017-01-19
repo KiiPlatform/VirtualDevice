@@ -10,7 +10,7 @@ BASE_URL = 'https://qa21.internal.kii.com'
 IOT_URL = BASE_URL + '/thing-if/'
 UFE_URL = BASE_URL + '/api/'
 
-FILE_EXT = '-my.json'
+FILE_EXT = '.json'
 
 admin_token = None
 
