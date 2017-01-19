@@ -585,6 +585,57 @@ public class Device implements MqttCallback {
         }
     }
 
+    public boolean setStates(String alias, List<String> stateNames, List<String> values) {
+        JSONObject changedState = new JSONObject();
+        JSONObject aliasItem = deviceAlias.get(alias);
+        if (aliasItem == null) {
+            return false;
+        }
+        JSONObject deviceStates = aliasItem.getJSONObject("states");
+        for (int i = 0; i < stateNames.size(); i++) {
+            String stateName = stateNames.get(i);
+            String value = values.get(i);
+            if (deviceStates.has(stateName)) {
+                int checkData = 0;
+                if ("TRUE".equalsIgnoreCase(value)) {
+                    changedState.put(stateName, true);
+                    checkData = 1;
+                } else if ("FALSE".equalsIgnoreCase(value)) {
+                    changedState.put(stateName, false);
+                    checkData = 0;
+                }
+                try {
+                    if (value.contains(".")) {
+                        changedState.put(stateName, Double.parseDouble(value));
+                        checkData = (int) Double.parseDouble(value);
+                    } else {
+                        changedState.put(stateName, Integer.parseInt(value));
+                        checkData = Integer.parseInt(value);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for (String name : changedState.keySet()) {
+            deviceStates.put(name, changedState.get(name));
+        }
+        if (mOnStatesChangedListener != null) {
+            mOnStatesChangedListener.onStatesChanged();
+        }
+        if (isUploadStateOnChanged()) {
+            try {
+                uploadStates();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (changedState.length() == stateNames.size()) {
+            return true;
+        }
+        return false;
+    }
+
     public OnStatesChangedListener getOnStatesChangedListener() {
         return mOnStatesChangedListener;
     }
