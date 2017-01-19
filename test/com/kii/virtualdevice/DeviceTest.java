@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Evan on 2017/1/17.
  */
@@ -29,9 +27,9 @@ public class DeviceTest {
     }
 
     @Test
-    public void listMyDevices() throws Exception {
+    public void listDevices() throws Exception {
         JSONObject user = KiiUtils.loginKiiCloud("evan", "123456");
-        List<Device> list = Device.listMyDevices(user.optString("access_token"));
+        List<Device> list = Device.listDevices(user.optString("access_token"));
         Assert.assertNotEquals(list.size(), 0);
     }
 

@@ -3,7 +3,6 @@ package com.kii.virtualdevice;
 import okhttp3.*;
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -79,13 +78,10 @@ public class Device implements MqttCallback {
 
     private boolean storeThingToBucket() {
         JSONObject json = new JSONObject();
-        try {
-            json.put("vendorThingID", vendorThingID);
-            json.put("thingID", thingID);
-            json.put("thingType", thingType);
-            json.put("firmwareVersion", firmwareVersion);
-        } catch (JSONException e) {
-        }
+        json.put("vendorThingID", vendorThingID);
+        json.put("thingID", thingID);
+        json.put("thingType", thingType);
+        json.put("firmwareVersion", firmwareVersion);
         RequestBody body = RequestBody.create(MediaType.parse("application/vnd." + Config.KiiAppId + ".mydata+json"), json.toString());
         Request request = new Request.Builder()
                 .url(Config.KiiSiteUrl + "/api/apps/" + Config.KiiAppId + "/users/me/buckets/" + Config.VIRTUAL_DEVICE_BUCKET + "/objects/" + thingID)
@@ -109,22 +105,19 @@ public class Device implements MqttCallback {
         return createNewDevice(vendorThingID, userID, userToken, thingType, firmwareVersion);
     }
 
-    public static List<Device> listMyDevices(String userToken) {
+    public static List<Device> listDevices(String userToken) {
         ArrayList<Device> devicesList = new ArrayList<>();
         String paginationKey = null;
         OkHttpClient client = new OkHttpClient();
         do {
             JSONObject json = new JSONObject();
-            try {
-                JSONObject clause = new JSONObject();
-                clause.put("type", "all");
-                JSONObject bucketQuery = new JSONObject();
-                bucketQuery.put("clause", clause);
-                json.put("bucketQuery", bucketQuery);
-                if (paginationKey != null) {
-                    json.put("paginationKey", paginationKey);
-                }
-            } catch (JSONException e) {
+            JSONObject clause = new JSONObject();
+            clause.put("type", "all");
+            JSONObject bucketQuery = new JSONObject();
+            bucketQuery.put("clause", clause);
+            json.put("bucketQuery", bucketQuery);
+            if (paginationKey != null) {
+                json.put("paginationKey", paginationKey);
             }
             paginationKey = null;
             RequestBody body = RequestBody.create(MediaType.parse("application/vnd.kii.QueryRequest+json"), json.toString());
@@ -136,7 +129,7 @@ public class Device implements MqttCallback {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     String result = response.body().string();
-                    LogUtil.debug("listMyDevices\n" + result);
+                    LogUtil.debug("listDevices\n" + result);
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray results = jsonObject.optJSONArray("results");
                     for (int i = 0; i < results.length(); i++) {
@@ -147,13 +140,12 @@ public class Device implements MqttCallback {
                         String firmwareVersion = item.getString("firmwareVersion");
                         String ownerID = item.getString("_owner");
                         Device device = new Device(vendorThingID, ownerID, userToken, thingType, firmwareVersion);
+                        device.thingID = thingID;
                         devicesList.add(device);
                     }
                     paginationKey = jsonObject.optString("nextPaginationKey");
                 }
             } catch (IOException e) {
-                LogUtil.error(e.getMessage());
-            } catch (JSONException e) {
                 LogUtil.error(e.getMessage());
             }
         } while (paginationKey != null);
@@ -162,14 +154,11 @@ public class Device implements MqttCallback {
 
     public void onboarding() {
         JSONObject json = new JSONObject();
-        try {
-            json.put("vendorThingID", vendorThingID);
-            json.put("thingPassword", Config.THING_PASSWORD);
-            json.put("thingType", thingType);
-            json.put("owner", "user:" + ownerID);
-            json.put("firmwareVersion", firmwareVersion);
-        } catch (JSONException e) {
-        }
+        json.put("vendorThingID", vendorThingID);
+        json.put("thingPassword", Config.THING_PASSWORD);
+        json.put("thingType", thingType);
+        json.put("owner", "user:" + ownerID);
+        json.put("firmwareVersion", firmwareVersion);
         RequestBody body = RequestBody.create(MediaType.parse("application/vnd.kii.OnboardingWithVendorThingIDByOwner+json"), json.toString());
         Request request = new Request.Builder()
                 .url(Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/onboardings")
@@ -191,8 +180,6 @@ public class Device implements MqttCallback {
             }
         } catch (IOException e) {
             LogUtil.error(e.getMessage());
-        } catch (JSONException e) {
-            LogUtil.error(e.getMessage());
         }
     }
 
@@ -213,6 +200,21 @@ public class Device implements MqttCallback {
         return firmwareVersion;
     }
 
+    public int getMessageQueueSize() {
+        return messageQueueSize;
+    }
+
+    public void setMessageQueueSize(int messageQueueSize) {
+        this.messageQueueSize = messageQueueSize;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
 
     public void loadTraits() {
         for (int i = 0; i < Config.SupportedTypes.length(); i++) {
@@ -259,34 +261,30 @@ public class Device implements MqttCallback {
         if (mqttEndpoint == null) {
             onboarding();
         }
+        String topic = mqttEndpoint.getString("mqttTopic");
+        String clientId = topic;
+
+        String host = mqttEndpoint.getString("host");
+        int port = mqttEndpoint.getInt("portTCP");
+        String broker = "tcp://" + host + ":" + port;
+
+        String userName = mqttEndpoint.getString("username");
+        String password = mqttEndpoint.getString("password");
         try {
-            String topic = mqttEndpoint.getString("mqttTopic");
-            String clientId = topic;
-
-            String host = mqttEndpoint.getString("host");
-            int port = mqttEndpoint.getInt("portTCP");
-            String broker = "tcp://" + host + ":" + port;
-
-            String userName = mqttEndpoint.getString("username");
-            String password = mqttEndpoint.getString("password");
-            try {
-                mqttClient = new MqttClient(broker, clientId);
-                mqttClient.setCallback(this);
-                MqttConnectOptions connOpts = new MqttConnectOptions();
-                connOpts.setUserName(userName);
-                connOpts.setPassword(password.toCharArray());
-                mqttClient.connect(connOpts);
-                LogUtil.debug("Connected to Mqtt broker");
-                mqttClient.subscribe(topic, Config.QoS);
-            } catch (MqttException e) {
-                e.printStackTrace();
-            }
-            startTime = System.currentTimeMillis();
-            getStatesFromServer();
-            uploadStates();
-        } catch (JSONException e) {
-            LogUtil.error(e.getMessage());
+            mqttClient = new MqttClient(broker, clientId);
+            mqttClient.setCallback(this);
+            MqttConnectOptions connOpts = new MqttConnectOptions();
+            connOpts.setUserName(userName);
+            connOpts.setPassword(password.toCharArray());
+            mqttClient.connect(connOpts);
+            LogUtil.debug("Connected to Mqtt broker");
+            mqttClient.subscribe(topic, Config.QoS);
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
+        startTime = System.currentTimeMillis();
+        getStatesFromServer();
+        uploadStates();
     }
 
     public void stop() {
@@ -305,11 +303,22 @@ public class Device implements MqttCallback {
     public boolean delete() throws IOException {
         stop();
         Request request = new Request.Builder()
-                .url(Config.KiiSiteUrl + "/apps/" + Config.KiiAppId + "/things/" + thingID)
-                .header("Authorization", "Bearer " + thingAccessToken)
+                .url(Config.KiiSiteUrl + "/api/apps/" + Config.KiiAppId + "/things/" + thingID)
+                .header("Authorization", "Bearer " + ownerToken)
                 .delete()
                 .build();
         try (Response response = client.newCall(request).execute()) {
+            LogUtil.debug("Delete thing:" + response.code());
+        }
+
+        request = new Request.Builder()
+                .url(Config.KiiSiteUrl + "/api/apps/" + Config.KiiAppId + "/users/me/buckets/" + Config.VIRTUAL_DEVICE_BUCKET + "/objects/" + thingID)
+                .header("Authorization", "Bearer " + ownerToken)
+                .header("If-Match", "1")
+                .delete()
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            LogUtil.debug("Delete thing from bucket:" + response.code());
             return response.isSuccessful();
         }
     }
@@ -415,16 +424,7 @@ public class Device implements MqttCallback {
 
 
     public boolean uploadStates() throws IOException {
-        JSONObject uploadData = new JSONObject();
-        try {
-            for (JSONObject alias : deviceAlias.values()) {
-                String name = alias.optString("name");
-                JSONObject states = alias.optJSONObject("states");
-                uploadData.put(name, states);
-            }
-        } catch (JSONException e) {
-            LogUtil.error(e.getMessage());
-        }
+        JSONObject uploadData = getStates();
         String url = Config.KiiSiteUrl + "/thing-if/apps/" + Config.KiiAppId + "/targets/THING:" + thingID + "/states";
         RequestBody body = RequestBody.create(
                 MediaType.parse("application/vnd.kii.MultipleTraitState+json"),
@@ -476,7 +476,7 @@ public class Device implements MqttCallback {
      * @param period Unit: Seconds
      */
     public void setGenRandomStatePeriod(int period) {
-        if (mqttClient == null || !mqttClient.isConnected()) {
+        if ((mqttClient == null || !mqttClient.isConnected()) && period != 0) {
             throw new RuntimeException("setGenRandomStatePeriod after start device");
         }
         this.genRandomStatePeriod = period;
@@ -558,22 +558,18 @@ public class Device implements MqttCallback {
                 JSONObject keyData = stateItem.optJSONObject(firstKey);
                 JSONObject payloadSchema = keyData.optJSONObject("payloadSchema");
                 String type = payloadSchema.optString("type");
-                try {
-                    switch (type) {
-                        case "integer": {
-                            int max = payloadSchema.optInt("maximum", 0);
-                            int min = payloadSchema.optInt("minimum", 0);
-                            states.put(firstKey, random.nextInt(max - min) + min);
-                        }
-                        break;
-                        case "boolean":
-                            states.put(firstKey, random.nextInt() % 2 == 0);
-                            break;
+                switch (type) {
+                    case "integer": {
+                        int max = payloadSchema.optInt("maximum", 0);
+                        int min = payloadSchema.optInt("minimum", 0);
+                        states.put(firstKey, random.nextInt(max - min) + min);
                     }
-                    alias.put("states", states);
-                } catch (JSONException e) {
-                    LogUtil.error(e.getMessage());
+                    break;
+                    case "boolean":
+                        states.put(firstKey, random.nextInt() % 2 == 0);
+                        break;
                 }
+                alias.put("states", states);
             }
         }
         if (!isInitData && isUploadStateOnChanged()) {
@@ -584,6 +580,17 @@ public class Device implements MqttCallback {
             }
         }
     }
+
+    public JSONObject getStates() {
+        JSONObject results = new JSONObject();
+        for (JSONObject alias : deviceAlias.values()) {
+            String name = alias.optString("name");
+            JSONObject states = alias.optJSONObject("states");
+            results.put(name, states);
+        }
+        return results;
+    }
+
 
     public boolean setStates(String alias, List<String> stateNames, List<String> values) {
         JSONObject changedState = new JSONObject();
