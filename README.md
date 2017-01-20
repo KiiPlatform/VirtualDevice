@@ -9,6 +9,7 @@ Username: evan
 Password: 123456
 
 ##How to generate configuration file:
+You will need to pip install all needed python packages in packages.txt
 Run testInit.sh
 Or directly call init.py file with all the parameters
 
