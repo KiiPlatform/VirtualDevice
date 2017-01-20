@@ -458,12 +458,14 @@ public class Device implements MqttCallback {
                 JSONObject jsonObject = null;
                 jsonObject = new JSONObject(result);
                 JSONArray names = jsonObject.names();
-                for (int i = 0; i < names.length(); i++) {
-                    String name = names.optString(i);
-                    JSONObject states = jsonObject.optJSONObject(name);
-                    JSONObject alias = deviceAlias.get(name);
-                    if (alias != null && states.length() > 0) {
-                        alias.put("states", states);
+                if (names != null) {
+                    for (int i = 0; i < names.length(); i++) {
+                        String name = names.optString(i);
+                        JSONObject states = jsonObject.optJSONObject(name);
+                        JSONObject alias = deviceAlias.get(name);
+                        if (alias != null && states.length() > 0) {
+                            alias.put("states", states);
+                        }
                     }
                 }
             }
