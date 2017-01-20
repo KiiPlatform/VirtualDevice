@@ -22,8 +22,7 @@ def init_app():
 	build_config()
 
 	print '\nGenerating trait config files...'
-	build_trait_definition('Lamp-V1', 1)
-	build_trait_definition('EnvironmentSensor-V1', 1)
+	build_trait_definitions()
 
 	print '\n* Initialization completed in:', datetime.datetime.now() - started_at
 
@@ -54,6 +53,15 @@ def build_trait_definition(trait_name, trait_version):
 	#print log_json(definition)
 
 	save_config(definition, trait_name)
+
+def build_trait_definitions():
+	url = get_thing_if_url('traits')
+	headers = {'Authorization' : 'Bearer %s' % admin_token}
+
+	req = requests.get(url, headers=headers)
+	
+	for trait in req.json()['traits']:
+		build_trait_definition(trait['trait'], trait['traitVersion'])
 
 def build_config():
 	print 'Generating config file...'
