@@ -1,5 +1,0 @@
-# pip install -r packages.txt
-
-argparse
-requests
-datetime

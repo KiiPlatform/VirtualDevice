@@ -1,5 +1,5 @@
 {
-  "kiiAppId": "192b49ce",
+  "kiiAppId": "460aebd7",
   "supportTypes": [
     {
       "type": "AirCondition",
@@ -42,5 +42,5 @@
       "code": "K"
     }
   ],
-  "beehiveBaseUrl": "http:\/\/114.215.196.178:8080\/beehive-portal\/api"
+  "beehiveBaseUrl": "http:\/\/120.77.83.143:8080\/beehive-portal\/api"
 }

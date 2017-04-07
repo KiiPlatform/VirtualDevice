@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: nanohttpd-2.3.1.jar okhttp-3.4.2.jar okio-1.11.0.jar json-
+ 20151123.jar org.eclipse.paho.client.mqttv3-1.1.0.jar
+Main-Class: com.kii.beehive.virtual_device.ui.MainFrame
+

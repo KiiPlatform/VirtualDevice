@@ -1,0 +1,31 @@
+{
+  "id" : 56,
+  "createDate" : 1480398803000,
+  "modifyDate" : 1480398803000,
+  "createBy" : "640",
+  "modifyBy" : "640",
+  "schemaType" : "industrytemplate",
+  "thingType" : "LightingPanel",
+  "name" : "LightingPanel",
+  "version" : "1",
+  "content" : {
+    "statesSchema" : {
+      "type" : "object",
+      "properties" : {
+        "States" : {
+          "displayNameCN" : "面板状态",
+          "enum" : {
+            "复位" : 0,
+            "触发" : 1
+          },
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : null,
+          "enumType" : "NUMBER"
+        }
+      },
+      "title" : "照明面板"
+    }
+  }
+}

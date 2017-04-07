@@ -1,0 +1,109 @@
+{
+  "id" : 49,
+  "createDate" : 1473238521000,
+  "modifyDate" : 1474960564000,
+  "createBy" : "0",
+  "modifyBy" : "640",
+  "schemaType" : "industrytemplate",
+  "thingType" : "EnvironmentSensor",
+  "name" : "EnvironmentSensor",
+  "version" : "1",
+  "content" : {
+    "statesSchema" : {
+      "type" : "object",
+      "properties" : {
+        "CO2" : {
+          "displayNameCN" : "二氧化碳",
+          "enum" : null,
+          "maximum" : 2000,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "ppm",
+          "enumType" : null
+        },
+        "Smoke" : {
+          "displayNameCN" : "烟雾感应",
+          "enum" : null,
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : null,
+          "enumType" : null
+        },
+        "Temp" : {
+          "displayNameCN" : "温度",
+          "enum" : null,
+          "maximum" : 990,
+          "minimum" : -200,
+          "type" : "float",
+          "unit" : "˚C",
+          "enumType" : null
+        },
+        "VOC" : {
+          "displayNameCN" : "空气质量",
+          "enum" : null,
+          "maximum" : 30,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "ppm",
+          "enumType" : null
+        },
+        "Humidity" : {
+          "displayNameCN" : "湿度",
+          "enum" : null,
+          "maximum" : 99,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "%",
+          "enumType" : null
+        },
+        "Noise" : {
+          "displayNameCN" : "噪音指数",
+          "enum" : null,
+          "maximum" : 100,
+          "minimum" : 30,
+          "type" : "int",
+          "unit" : "dB",
+          "enumType" : null
+        },
+        "Bri" : {
+          "displayNameCN" : "亮度",
+          "enum" : null,
+          "maximum" : 40000,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "Lux",
+          "enumType" : null
+        },
+        "ConStates" : {
+          "displayNameCN" : "连接状态",
+          "enum" : null,
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "boolean",
+          "unit" : null,
+          "enumType" : null
+        },
+        "PIR" : {
+          "displayNameCN" : "人体感应",
+          "enum" : null,
+          "maximum" : 1,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : null,
+          "enumType" : null
+        },
+        "PM25" : {
+          "displayNameCN" : "PM2.5",
+          "enum" : null,
+          "maximum" : 999,
+          "minimum" : 0,
+          "type" : "int",
+          "unit" : "ug/m3",
+          "enumType" : null
+        }
+      },
+      "title" : "环境传感器"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id" : 65,
+  "createDate" : 1482136579000,
+  "modifyDate" : 1482136579000,
+  "createBy" : "0",
+  "modifyBy" : "0",
+  "schemaType" : "industrytemplate",
+  "thingType" : "FaceRecognition",
+  "name" : "FaceRecognition",
+  "version" : "1",
+  "content" : {
+    "statesSchema" : {
+      "type" : "object",
+      "properties" : {
+        "timestamp" : {
+          "displayNameCN" : "时间",
+          "enum" : null,
+          "type" : "date",
+          "unit" : null,
+          "enumType" : null
+        },
+        "UserID" : {
+          "displayNameCN" : "用户ID",
+          "enum" : null,
+          "type" : "string",
+          "unit" : null,
+          "enumType" : null
+        }
+      },
+      "title" : "人脸识别"
+    }
+  }
+}

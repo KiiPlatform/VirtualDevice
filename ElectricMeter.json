@@ -1,0 +1,40 @@
+{
+  "id" : 47,
+  "createDate" : 1473238470000,
+  "modifyDate" : 1473238470000,
+  "createBy" : "0",
+  "modifyBy" : "0",
+  "schemaType" : "industrytemplate",
+  "thingType" : "ElectricMeter",
+  "name" : "ElectricMeter",
+  "version" : "1",
+  "content" : {
+    "statesSchema" : {
+      "type" : "object",
+      "properties" : {
+        "P" : {
+          "displayNameCN" : "功率",
+          "enum" : null,
+          "type" : "float",
+          "unit" : "KW",
+          "enumType" : null
+        },
+        "PF" : {
+          "displayNameCN" : "功率因数",
+          "enum" : null,
+          "type" : "float",
+          "unit" : "--",
+          "enumType" : null
+        },
+        "Wh" : {
+          "displayNameCN" : "电量",
+          "enum" : null,
+          "type" : "int",
+          "unit" : "Wh",
+          "enumType" : null
+        }
+      },
+      "title" : "智能电表"
+    }
+  }
+}
