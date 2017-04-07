@@ -1,45 +1,41 @@
 {
   "kiiAppId": "460aebd7",
-  "supportTypes": [
+  "supportTypes" : [
     {
-      "type": "AirCondition",
-      "code": "D"
+      "type" : "AirCondition",
+      "code" : "D"
     },
     {
-      "type": "ElectricMeter",
-      "code": "N"
+      "type" : "ElectricMeter",
+      "code" : "N"
     },
     {
-      "type": "EnvironmentSensor",
-      "code": "O"
+      "type" : "EnvironmentSensor",
+      "code" : "O"
     },
     {
-      "type": "FreshAir",
-      "code": "E"
+      "type" : "FreshAir",
+      "code" : "E"
     },
     {
-      "type": "Lighting",
-      "code": "C"
+      "type" : "Lighting",
+      "code" : "C"
     },
     {
-      "type": "PasswordLock",
-      "code": "S"
+      "type" : "PasswordLock",
+      "code" : "S"
     },
     {
-      "type": "5in1Sensor",
-      "code": "O"
+      "type" : "LightingPanel",
+      "code" : "R"
     },
     {
-      "type": "LightingPanel",
-      "code": "R"
+      "type" : "FaceRecognition",
+      "code" : "L"
     },
     {
-      "type": "FaceRecognition",
-      "code": "L"
-    },
-    {
-      "type": "Multigate",
-      "code": "K"
+      "type" : "Multigate",
+      "code" : "K"
     }
   ],
   "beehiveBaseUrl": "http:\/\/120.77.83.143:8080\/beehive-portal\/api"

@@ -26,10 +26,6 @@
       "code": "S"
     },
     {
-      "type": "5in1Sensor",
-      "code": "O"
-    },
-    {
       "type": "LightingPanel",
       "code": "R"
     },
